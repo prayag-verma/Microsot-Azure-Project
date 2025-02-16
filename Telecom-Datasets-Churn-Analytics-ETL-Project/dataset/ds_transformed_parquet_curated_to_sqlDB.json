@@ -1,0 +1,115 @@
+{
+	"name": "ds_transformed_parquet_curated_to_sqlDB",
+	"properties": {
+		"description": "Final transformed parquet file to be loaded into Target table Azure SQL Table!",
+		"linkedServiceName": {
+			"referenceName": "ls_telecodatasa",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "t-mobile/transformed_data.parquet",
+				"fileSystem": "curated"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "CustomerID",
+				"type": "UTF8"
+			},
+			{
+				"name": "Gender",
+				"type": "UTF8"
+			},
+			{
+				"name": "SeniorCitizen",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "Partner",
+				"type": "UTF8"
+			},
+			{
+				"name": "Dependents",
+				"type": "UTF8"
+			},
+			{
+				"name": "Tenure",
+				"type": "INT_32"
+			},
+			{
+				"name": "PhoneService",
+				"type": "UTF8"
+			},
+			{
+				"name": "MultipleLines",
+				"type": "UTF8"
+			},
+			{
+				"name": "InternetService",
+				"type": "UTF8"
+			},
+			{
+				"name": "OnlineSecurity",
+				"type": "UTF8"
+			},
+			{
+				"name": "OnlineBackup",
+				"type": "UTF8"
+			},
+			{
+				"name": "DeviceProtection",
+				"type": "UTF8"
+			},
+			{
+				"name": "TechSupport",
+				"type": "UTF8"
+			},
+			{
+				"name": "StreamingTV",
+				"type": "UTF8"
+			},
+			{
+				"name": "StreamingMovies",
+				"type": "UTF8"
+			},
+			{
+				"name": "Contract",
+				"type": "UTF8"
+			},
+			{
+				"name": "PaperlessBilling",
+				"type": "UTF8"
+			},
+			{
+				"name": "PaymentMethod",
+				"type": "UTF8"
+			},
+			{
+				"name": "MonthlyCharges",
+				"type": "DECIMAL",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "TotalCharges",
+				"type": "DECIMAL",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "Churn",
+				"type": "UTF8"
+			},
+			{
+				"name": "LoadDate",
+				"type": "INT96"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

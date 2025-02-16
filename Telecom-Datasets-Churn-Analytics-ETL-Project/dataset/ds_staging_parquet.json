@@ -1,0 +1,156 @@
+{
+	"name": "ds_staging_parquet",
+	"properties": {
+		"description": "Cleansed data",
+		"linkedServiceName": {
+			"referenceName": "ls_telecodatasa",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "cleansed_data.parquet",
+				"folderPath": "t-mobile",
+				"fileSystem": "staging"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "CustomerID",
+				"type": "UTF8"
+			},
+			{
+				"name": "Count",
+				"type": "UTF8"
+			},
+			{
+				"name": "Country",
+				"type": "UTF8"
+			},
+			{
+				"name": "State",
+				"type": "UTF8"
+			},
+			{
+				"name": "City",
+				"type": "UTF8"
+			},
+			{
+				"name": "Zip_Code",
+				"type": "UTF8"
+			},
+			{
+				"name": "Lat_Long",
+				"type": "UTF8"
+			},
+			{
+				"name": "Latitude",
+				"type": "UTF8"
+			},
+			{
+				"name": "Longitude",
+				"type": "UTF8"
+			},
+			{
+				"name": "Gender",
+				"type": "UTF8"
+			},
+			{
+				"name": "Senior_Citizen",
+				"type": "UTF8"
+			},
+			{
+				"name": "Partner",
+				"type": "UTF8"
+			},
+			{
+				"name": "Dependents",
+				"type": "UTF8"
+			},
+			{
+				"name": "Tenure_Months",
+				"type": "UTF8"
+			},
+			{
+				"name": "Phone_Service",
+				"type": "UTF8"
+			},
+			{
+				"name": "Multiple_Lines",
+				"type": "UTF8"
+			},
+			{
+				"name": "Internet_Service",
+				"type": "UTF8"
+			},
+			{
+				"name": "Online_Security",
+				"type": "UTF8"
+			},
+			{
+				"name": "Online_Backup",
+				"type": "UTF8"
+			},
+			{
+				"name": "Device_Protection",
+				"type": "UTF8"
+			},
+			{
+				"name": "Tech_Support",
+				"type": "UTF8"
+			},
+			{
+				"name": "Streaming_TV",
+				"type": "UTF8"
+			},
+			{
+				"name": "Streaming_Movies",
+				"type": "UTF8"
+			},
+			{
+				"name": "Contract",
+				"type": "UTF8"
+			},
+			{
+				"name": "Paperless_Billing",
+				"type": "UTF8"
+			},
+			{
+				"name": "Payment_Method",
+				"type": "UTF8"
+			},
+			{
+				"name": "Monthly_Charges",
+				"type": "UTF8"
+			},
+			{
+				"name": "Total_Charges",
+				"type": "UTF8"
+			},
+			{
+				"name": "Churn_Label",
+				"type": "UTF8"
+			},
+			{
+				"name": "Churn_Value",
+				"type": "UTF8"
+			},
+			{
+				"name": "Churn_Score",
+				"type": "UTF8"
+			},
+			{
+				"name": "CLTV",
+				"type": "UTF8"
+			},
+			{
+				"name": "Churn_Reason",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

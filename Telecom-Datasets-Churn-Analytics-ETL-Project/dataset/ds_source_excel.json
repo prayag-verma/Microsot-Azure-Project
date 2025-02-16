@@ -1,0 +1,157 @@
+{
+	"name": "ds_source_excel",
+	"properties": {
+		"description": "Source Dataset (Original Excel file)",
+		"linkedServiceName": {
+			"referenceName": "ls_telecodatasa",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Telco_Churn",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Telecom_churn_customer_sample_data.xlsx",
+				"folderPath": "t-mobile/2024/02/14",
+				"fileSystem": "raw"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "CustomerID",
+				"type": "String"
+			},
+			{
+				"name": "Count",
+				"type": "String"
+			},
+			{
+				"name": "Country",
+				"type": "String"
+			},
+			{
+				"name": "State",
+				"type": "String"
+			},
+			{
+				"name": "City",
+				"type": "String"
+			},
+			{
+				"name": "Zip Code",
+				"type": "String"
+			},
+			{
+				"name": "Lat Long",
+				"type": "String"
+			},
+			{
+				"name": "Latitude",
+				"type": "String"
+			},
+			{
+				"name": "Longitude",
+				"type": "String"
+			},
+			{
+				"name": "Gender",
+				"type": "String"
+			},
+			{
+				"name": "Senior Citizen",
+				"type": "String"
+			},
+			{
+				"name": "Partner",
+				"type": "String"
+			},
+			{
+				"name": "Dependents",
+				"type": "String"
+			},
+			{
+				"name": "Tenure Months",
+				"type": "String"
+			},
+			{
+				"name": "Phone Service",
+				"type": "String"
+			},
+			{
+				"name": "Multiple Lines",
+				"type": "String"
+			},
+			{
+				"name": "Internet Service",
+				"type": "String"
+			},
+			{
+				"name": "Online Security",
+				"type": "String"
+			},
+			{
+				"name": "Online Backup",
+				"type": "String"
+			},
+			{
+				"name": "Device Protection",
+				"type": "String"
+			},
+			{
+				"name": "Tech Support",
+				"type": "String"
+			},
+			{
+				"name": "Streaming TV",
+				"type": "String"
+			},
+			{
+				"name": "Streaming Movies",
+				"type": "String"
+			},
+			{
+				"name": "Contract",
+				"type": "String"
+			},
+			{
+				"name": "Paperless Billing",
+				"type": "String"
+			},
+			{
+				"name": "Payment Method",
+				"type": "String"
+			},
+			{
+				"name": "Monthly Charges",
+				"type": "String"
+			},
+			{
+				"name": "Total Charges",
+				"type": "String"
+			},
+			{
+				"name": "Churn Label",
+				"type": "String"
+			},
+			{
+				"name": "Churn Value",
+				"type": "String"
+			},
+			{
+				"name": "Churn Score",
+				"type": "String"
+			},
+			{
+				"name": "CLTV",
+				"type": "String"
+			},
+			{
+				"name": "Churn Reason",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

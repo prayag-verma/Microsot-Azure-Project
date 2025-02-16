@@ -1,0 +1,2021 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "t-mobile-adf"
+		},
+		"ls_teleco_dbricks_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'ls_teleco_dbricks'"
+		},
+		"ls_telecodatasa_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_telecodatasa'"
+		},
+		"ls_telecom_customer_info_databricks_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'ls_telecom_customer_info_databricks'"
+		},
+		"ls_tmobile_sqldb_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_tmobile_sqldb'"
+		},
+		"ls_teleco_dbricks_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0215-030423-4m08i9mj"
+		},
+		"ls_telecodatasa_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://telecodatasa.dfs.core.windows.net"
+		},
+		"ls_telecom_customer_info_databricks_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0215-030423-4m08i9mj"
+		},
+		"ls_tmobile_sqldb_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "t-mobile-sql-server.database.windows.net"
+		},
+		"ls_tmobile_sqldb_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "t-mobile-sql-db"
+		},
+		"ls_tmobile_sqldb_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sql-server-dmin"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_teleco_dbricks')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Linked Service for --> 'teleco-dbricks-dev' databricks service!\n\nDatabricks compute for T-Mobile ETL",
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-2011499564703575.15.azuredatabricks.net",
+					"accessToken": {
+						"type": "SecureString",
+						"value": "[parameters('ls_teleco_dbricks_accessToken')]"
+					},
+					"existingClusterId": "[parameters('ls_teleco_dbricks_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_telecodatasa')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Linked Service for -->'telecodatasa' storage account!",
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ls_telecodatasa_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ls_telecodatasa_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_telecom_customer_info_databricks')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Linked Service for --> 'teleco-dbricks-dev' databricks service!\n\nDatabricks compute for T-Mobile ETL --> databricks notebook 'telecom_customer_info_table'",
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-2011499564703575.15.azuredatabricks.net",
+					"accessToken": {
+						"type": "SecureString",
+						"value": "[parameters('ls_telecom_customer_info_databricks_accessToken')]"
+					},
+					"existingClusterId": "[parameters('ls_telecom_customer_info_databricks_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_tmobile_sqldb')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Linked service for --> 't-mobile-sql-db' database!",
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('ls_tmobile_sqldb_properties_typeProperties_server')]",
+					"database": "[parameters('ls_tmobile_sqldb_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": true,
+					"authenticationType": "SQL",
+					"userName": "[parameters('ls_tmobile_sqldb_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('ls_tmobile_sqldb_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Schedule T-Mobile Pipelie')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 5,
+						"startTime": "2025-02-16T05:56:00",
+						"timeZone": "Central Standard Time"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_curated_sql')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_tmobile_sqldb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "varchar"
+					},
+					{
+						"name": "Gender",
+						"type": "varchar"
+					},
+					{
+						"name": "SeniorCitizen",
+						"type": "bit"
+					},
+					{
+						"name": "Partner",
+						"type": "varchar"
+					},
+					{
+						"name": "Dependents",
+						"type": "varchar"
+					},
+					{
+						"name": "Tenure",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PhoneService",
+						"type": "varchar"
+					},
+					{
+						"name": "MultipleLines",
+						"type": "varchar"
+					},
+					{
+						"name": "InternetService",
+						"type": "varchar"
+					},
+					{
+						"name": "OnlineSecurity",
+						"type": "varchar"
+					},
+					{
+						"name": "OnlineBackup",
+						"type": "varchar"
+					},
+					{
+						"name": "DeviceProtection",
+						"type": "varchar"
+					},
+					{
+						"name": "TechSupport",
+						"type": "varchar"
+					},
+					{
+						"name": "StreamingTV",
+						"type": "varchar"
+					},
+					{
+						"name": "StreamingMovies",
+						"type": "varchar"
+					},
+					{
+						"name": "Contract",
+						"type": "varchar"
+					},
+					{
+						"name": "PaperlessBilling",
+						"type": "varchar"
+					},
+					{
+						"name": "PaymentMethod",
+						"type": "varchar"
+					},
+					{
+						"name": "MonthlyCharges",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 2
+					},
+					{
+						"name": "TotalCharges",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 2
+					},
+					{
+						"name": "Churn",
+						"type": "varchar"
+					},
+					{
+						"name": "LoadDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "telecom_analytics"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_tmobile_sqldb')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_source_excel')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Source Dataset (Original Excel file)",
+				"linkedServiceName": {
+					"referenceName": "ls_telecodatasa",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Telco_Churn",
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Telecom_churn_customer_sample_data.xlsx",
+						"folderPath": "t-mobile/2024/02/14",
+						"fileSystem": "raw"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "Count",
+						"type": "String"
+					},
+					{
+						"name": "Country",
+						"type": "String"
+					},
+					{
+						"name": "State",
+						"type": "String"
+					},
+					{
+						"name": "City",
+						"type": "String"
+					},
+					{
+						"name": "Zip Code",
+						"type": "String"
+					},
+					{
+						"name": "Lat Long",
+						"type": "String"
+					},
+					{
+						"name": "Latitude",
+						"type": "String"
+					},
+					{
+						"name": "Longitude",
+						"type": "String"
+					},
+					{
+						"name": "Gender",
+						"type": "String"
+					},
+					{
+						"name": "Senior Citizen",
+						"type": "String"
+					},
+					{
+						"name": "Partner",
+						"type": "String"
+					},
+					{
+						"name": "Dependents",
+						"type": "String"
+					},
+					{
+						"name": "Tenure Months",
+						"type": "String"
+					},
+					{
+						"name": "Phone Service",
+						"type": "String"
+					},
+					{
+						"name": "Multiple Lines",
+						"type": "String"
+					},
+					{
+						"name": "Internet Service",
+						"type": "String"
+					},
+					{
+						"name": "Online Security",
+						"type": "String"
+					},
+					{
+						"name": "Online Backup",
+						"type": "String"
+					},
+					{
+						"name": "Device Protection",
+						"type": "String"
+					},
+					{
+						"name": "Tech Support",
+						"type": "String"
+					},
+					{
+						"name": "Streaming TV",
+						"type": "String"
+					},
+					{
+						"name": "Streaming Movies",
+						"type": "String"
+					},
+					{
+						"name": "Contract",
+						"type": "String"
+					},
+					{
+						"name": "Paperless Billing",
+						"type": "String"
+					},
+					{
+						"name": "Payment Method",
+						"type": "String"
+					},
+					{
+						"name": "Monthly Charges",
+						"type": "String"
+					},
+					{
+						"name": "Total Charges",
+						"type": "String"
+					},
+					{
+						"name": "Churn Label",
+						"type": "String"
+					},
+					{
+						"name": "Churn Value",
+						"type": "String"
+					},
+					{
+						"name": "Churn Score",
+						"type": "String"
+					},
+					{
+						"name": "CLTV",
+						"type": "String"
+					},
+					{
+						"name": "Churn Reason",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_telecodatasa')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_staging_parquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Cleansed data",
+				"linkedServiceName": {
+					"referenceName": "ls_telecodatasa",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "cleansed_data.parquet",
+						"folderPath": "t-mobile",
+						"fileSystem": "staging"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "UTF8"
+					},
+					{
+						"name": "Count",
+						"type": "UTF8"
+					},
+					{
+						"name": "Country",
+						"type": "UTF8"
+					},
+					{
+						"name": "State",
+						"type": "UTF8"
+					},
+					{
+						"name": "City",
+						"type": "UTF8"
+					},
+					{
+						"name": "Zip_Code",
+						"type": "UTF8"
+					},
+					{
+						"name": "Lat_Long",
+						"type": "UTF8"
+					},
+					{
+						"name": "Latitude",
+						"type": "UTF8"
+					},
+					{
+						"name": "Longitude",
+						"type": "UTF8"
+					},
+					{
+						"name": "Gender",
+						"type": "UTF8"
+					},
+					{
+						"name": "Senior_Citizen",
+						"type": "UTF8"
+					},
+					{
+						"name": "Partner",
+						"type": "UTF8"
+					},
+					{
+						"name": "Dependents",
+						"type": "UTF8"
+					},
+					{
+						"name": "Tenure_Months",
+						"type": "UTF8"
+					},
+					{
+						"name": "Phone_Service",
+						"type": "UTF8"
+					},
+					{
+						"name": "Multiple_Lines",
+						"type": "UTF8"
+					},
+					{
+						"name": "Internet_Service",
+						"type": "UTF8"
+					},
+					{
+						"name": "Online_Security",
+						"type": "UTF8"
+					},
+					{
+						"name": "Online_Backup",
+						"type": "UTF8"
+					},
+					{
+						"name": "Device_Protection",
+						"type": "UTF8"
+					},
+					{
+						"name": "Tech_Support",
+						"type": "UTF8"
+					},
+					{
+						"name": "Streaming_TV",
+						"type": "UTF8"
+					},
+					{
+						"name": "Streaming_Movies",
+						"type": "UTF8"
+					},
+					{
+						"name": "Contract",
+						"type": "UTF8"
+					},
+					{
+						"name": "Paperless_Billing",
+						"type": "UTF8"
+					},
+					{
+						"name": "Payment_Method",
+						"type": "UTF8"
+					},
+					{
+						"name": "Monthly_Charges",
+						"type": "UTF8"
+					},
+					{
+						"name": "Total_Charges",
+						"type": "UTF8"
+					},
+					{
+						"name": "Churn_Label",
+						"type": "UTF8"
+					},
+					{
+						"name": "Churn_Value",
+						"type": "UTF8"
+					},
+					{
+						"name": "Churn_Score",
+						"type": "UTF8"
+					},
+					{
+						"name": "CLTV",
+						"type": "UTF8"
+					},
+					{
+						"name": "Churn_Reason",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_telecodatasa')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_telecom_customer_info_table_sql')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This datasets is for  'telecom_customer_info' table",
+				"linkedServiceName": {
+					"referenceName": "ls_tmobile_sqldb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "varchar"
+					},
+					{
+						"name": "Count",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Country",
+						"type": "varchar"
+					},
+					{
+						"name": "State",
+						"type": "varchar"
+					},
+					{
+						"name": "City",
+						"type": "varchar"
+					},
+					{
+						"name": "ZipCode",
+						"type": "varchar"
+					},
+					{
+						"name": "LatLong",
+						"type": "varchar"
+					},
+					{
+						"name": "Latitude",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 6
+					},
+					{
+						"name": "Longitude",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 6
+					},
+					{
+						"name": "ChurnValue",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ChurnScore",
+						"type": "decimal",
+						"precision": 5,
+						"scale": 2
+					},
+					{
+						"name": "CLTV",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 2
+					},
+					{
+						"name": "ChurnReason",
+						"type": "varchar"
+					},
+					{
+						"name": "LoadDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "telecom_customer_info"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_tmobile_sqldb')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_transformed_parquet_curated_to_customer_info_sqlDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_telecodatasa",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "t-mobile/telecom_customer_info.parquet",
+						"fileSystem": "curated"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "UTF8"
+					},
+					{
+						"name": "Count",
+						"type": "INT_32"
+					},
+					{
+						"name": "Country",
+						"type": "UTF8"
+					},
+					{
+						"name": "State",
+						"type": "UTF8"
+					},
+					{
+						"name": "City",
+						"type": "UTF8"
+					},
+					{
+						"name": "ZipCode",
+						"type": "UTF8"
+					},
+					{
+						"name": "LatLong",
+						"type": "UTF8"
+					},
+					{
+						"name": "Latitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 6
+					},
+					{
+						"name": "Longitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 6
+					},
+					{
+						"name": "ChurnValue",
+						"type": "INT_32"
+					},
+					{
+						"name": "ChurnScore",
+						"type": "DECIMAL",
+						"precision": 5,
+						"scale": 2
+					},
+					{
+						"name": "CLTV",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 2
+					},
+					{
+						"name": "ChurnReason",
+						"type": "UTF8"
+					},
+					{
+						"name": "LoadDate",
+						"type": "INT96"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_telecodatasa')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_transformed_parquet_curated_to_sqlDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Final transformed parquet file to be loaded into Target table Azure SQL Table!",
+				"linkedServiceName": {
+					"referenceName": "ls_telecodatasa",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "t-mobile/transformed_data.parquet",
+						"fileSystem": "curated"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "UTF8"
+					},
+					{
+						"name": "Gender",
+						"type": "UTF8"
+					},
+					{
+						"name": "SeniorCitizen",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "Partner",
+						"type": "UTF8"
+					},
+					{
+						"name": "Dependents",
+						"type": "UTF8"
+					},
+					{
+						"name": "Tenure",
+						"type": "INT_32"
+					},
+					{
+						"name": "PhoneService",
+						"type": "UTF8"
+					},
+					{
+						"name": "MultipleLines",
+						"type": "UTF8"
+					},
+					{
+						"name": "InternetService",
+						"type": "UTF8"
+					},
+					{
+						"name": "OnlineSecurity",
+						"type": "UTF8"
+					},
+					{
+						"name": "OnlineBackup",
+						"type": "UTF8"
+					},
+					{
+						"name": "DeviceProtection",
+						"type": "UTF8"
+					},
+					{
+						"name": "TechSupport",
+						"type": "UTF8"
+					},
+					{
+						"name": "StreamingTV",
+						"type": "UTF8"
+					},
+					{
+						"name": "StreamingMovies",
+						"type": "UTF8"
+					},
+					{
+						"name": "Contract",
+						"type": "UTF8"
+					},
+					{
+						"name": "PaperlessBilling",
+						"type": "UTF8"
+					},
+					{
+						"name": "PaymentMethod",
+						"type": "UTF8"
+					},
+					{
+						"name": "MonthlyCharges",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 2
+					},
+					{
+						"name": "TotalCharges",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 2
+					},
+					{
+						"name": "Churn",
+						"type": "UTF8"
+					},
+					{
+						"name": "LoadDate",
+						"type": "INT96"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_telecodatasa')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_tmobile_churn_main')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copy_source_to_staging",
+						"description": "Copy source data into staging layer with no transformation!",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"validateDataConsistency": false,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_telecodatasa",
+										"type": "LinkedServiceReference"
+									}
+								}
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CustomerID",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CustomerID",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Count",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Count",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Country",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Country",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "State",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "State",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "City",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "City",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Zip Code",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Zip_Code",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Lat Long",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Lat_Long",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Latitude",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Latitude",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Longitude",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Longitude",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Gender",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Gender",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Senior Citizen",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Senior_Citizen",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Partner",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Partner",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Dependents",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Dependents",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Tenure Months",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Tenure_Months",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Phone Service",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Phone_Service",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Multiple Lines",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Multiple_Lines",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Internet Service",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Internet_Service",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Online Security",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Online_Security",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Online Backup",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Online_Backup",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Device Protection",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Device_Protection",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Tech Support",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Tech_Support",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Streaming TV",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Streaming_TV",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Streaming Movies",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Streaming_Movies",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Contract",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Contract",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Paperless Billing",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Paperless_Billing",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Payment Method",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Payment_Method",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Monthly Charges",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Monthly_Charges",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Total Charges",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Total_Charges",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Churn Label",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Churn_Label",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Churn Value",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Churn_Value",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Churn Score",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Churn_Score",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "CLTV",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CLTV",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Churn Reason",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Churn_Reason",
+											"physicalType": "UTF8"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_source_excel",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_staging_parquet",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "transform_staging_to_curated",
+						"description": "Databricks compute for T-Mobile ETL",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "copy_source_to_staging",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/prayag.verma@studentambassadors.com/transform_staging_to_curated"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_teleco_dbricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "copy_curated_to_sql",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "transform_staging_to_curated",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "part-*.parquet",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_telecodatasa",
+										"type": "LinkedServiceReference"
+									}
+								}
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CustomerID",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "CustomerID",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Gender",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Gender",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "SeniorCitizen",
+											"type": "Boolean",
+											"physicalType": "BOOLEAN"
+										},
+										"sink": {
+											"name": "SeniorCitizen",
+											"type": "Boolean",
+											"physicalType": "bit"
+										}
+									},
+									{
+										"source": {
+											"name": "Partner",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Partner",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Dependents",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Dependents",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Tenure",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										},
+										"sink": {
+											"name": "Tenure",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "PhoneService",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "PhoneService",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "MultipleLines",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "MultipleLines",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "InternetService",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "InternetService",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "OnlineSecurity",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "OnlineSecurity",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "OnlineBackup",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "OnlineBackup",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "DeviceProtection",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "DeviceProtection",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "TechSupport",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "TechSupport",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "StreamingTV",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "StreamingTV",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "StreamingMovies",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "StreamingMovies",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Contract",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Contract",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "PaperlessBilling",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "PaperlessBilling",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "PaymentMethod",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "PaymentMethod",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "MonthlyCharges",
+											"type": "Decimal",
+											"physicalType": "DECIMAL",
+											"scale": 2,
+											"precision": 10
+										},
+										"sink": {
+											"name": "MonthlyCharges",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 2,
+											"precision": 10
+										}
+									},
+									{
+										"source": {
+											"name": "TotalCharges",
+											"type": "Decimal",
+											"physicalType": "DECIMAL",
+											"scale": 2,
+											"precision": 10
+										},
+										"sink": {
+											"name": "TotalCharges",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 2,
+											"precision": 10
+										}
+									},
+									{
+										"source": {
+											"name": "Churn",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Churn",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "LoadDate",
+											"type": "DateTime",
+											"physicalType": "INT96"
+										},
+										"sink": {
+											"name": "LoadDate",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_transformed_parquet_curated_to_sqlDB",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_curated_sql",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "copy_curated_to_customer_info_sql",
+						"description": "Load Final transformed data into 'telecom_customer_info' table Azure SQL!",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "transform_customer_info_staging_to_curated",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "part-*.parquet",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CustomerID",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "CustomerID",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Count",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										},
+										"sink": {
+											"name": "Count",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "Country",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Country",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "State",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "State",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "City",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "City",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "ZipCode",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "ZipCode",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "LatLong",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "LatLong",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Latitude",
+											"type": "Decimal",
+											"physicalType": "DECIMAL",
+											"scale": 6,
+											"precision": 10
+										},
+										"sink": {
+											"name": "Latitude",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 10
+										}
+									},
+									{
+										"source": {
+											"name": "Longitude",
+											"type": "Decimal",
+											"physicalType": "DECIMAL",
+											"scale": 6,
+											"precision": 10
+										},
+										"sink": {
+											"name": "Longitude",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 10
+										}
+									},
+									{
+										"source": {
+											"name": "ChurnValue",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										},
+										"sink": {
+											"name": "ChurnValue",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "ChurnScore",
+											"type": "Decimal",
+											"physicalType": "DECIMAL",
+											"scale": 2,
+											"precision": 5
+										},
+										"sink": {
+											"name": "ChurnScore",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 2,
+											"precision": 5
+										}
+									},
+									{
+										"source": {
+											"name": "CLTV",
+											"type": "Decimal",
+											"physicalType": "DECIMAL",
+											"scale": 2,
+											"precision": 10
+										},
+										"sink": {
+											"name": "CLTV",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 2,
+											"precision": 10
+										}
+									},
+									{
+										"source": {
+											"name": "ChurnReason",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "ChurnReason",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "LoadDate",
+											"type": "DateTime",
+											"physicalType": "INT96"
+										},
+										"sink": {
+											"name": "LoadDate",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_transformed_parquet_curated_to_customer_info_sqlDB",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_telecom_customer_info_table_sql",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "transform_customer_info_staging_to_curated",
+						"description": "Transform staging parquet into customer_info parquet file ",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "copy_curated_to_sql",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/prayag.verma@studentambassadors.com/telecom_customer_info_table"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_telecom_customer_info_databricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-02-16T05:43:46Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_source_excel')]",
+				"[concat(variables('factoryId'), '/datasets/ds_staging_parquet')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_teleco_dbricks')]",
+				"[concat(variables('factoryId'), '/datasets/ds_transformed_parquet_curated_to_sqlDB')]",
+				"[concat(variables('factoryId'), '/datasets/ds_curated_sql')]",
+				"[concat(variables('factoryId'), '/datasets/ds_transformed_parquet_curated_to_customer_info_sqlDB')]",
+				"[concat(variables('factoryId'), '/datasets/ds_telecom_customer_info_table_sql')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_telecom_customer_info_databricks')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_telecodatasa')]"
+			]
+		}
+	]
+}

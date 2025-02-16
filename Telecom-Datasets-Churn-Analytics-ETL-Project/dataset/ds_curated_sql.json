@@ -1,0 +1,113 @@
+{
+	"name": "ds_curated_sql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_tmobile_sqldb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CustomerID",
+				"type": "varchar"
+			},
+			{
+				"name": "Gender",
+				"type": "varchar"
+			},
+			{
+				"name": "SeniorCitizen",
+				"type": "bit"
+			},
+			{
+				"name": "Partner",
+				"type": "varchar"
+			},
+			{
+				"name": "Dependents",
+				"type": "varchar"
+			},
+			{
+				"name": "Tenure",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PhoneService",
+				"type": "varchar"
+			},
+			{
+				"name": "MultipleLines",
+				"type": "varchar"
+			},
+			{
+				"name": "InternetService",
+				"type": "varchar"
+			},
+			{
+				"name": "OnlineSecurity",
+				"type": "varchar"
+			},
+			{
+				"name": "OnlineBackup",
+				"type": "varchar"
+			},
+			{
+				"name": "DeviceProtection",
+				"type": "varchar"
+			},
+			{
+				"name": "TechSupport",
+				"type": "varchar"
+			},
+			{
+				"name": "StreamingTV",
+				"type": "varchar"
+			},
+			{
+				"name": "StreamingMovies",
+				"type": "varchar"
+			},
+			{
+				"name": "Contract",
+				"type": "varchar"
+			},
+			{
+				"name": "PaperlessBilling",
+				"type": "varchar"
+			},
+			{
+				"name": "PaymentMethod",
+				"type": "varchar"
+			},
+			{
+				"name": "MonthlyCharges",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "TotalCharges",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "Churn",
+				"type": "varchar"
+			},
+			{
+				"name": "LoadDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "telecom_analytics"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,86 @@
+{
+	"name": "ds_transformed_parquet_curated_to_customer_info_sqlDB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_telecodatasa",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "t-mobile/telecom_customer_info.parquet",
+				"fileSystem": "curated"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "CustomerID",
+				"type": "UTF8"
+			},
+			{
+				"name": "Count",
+				"type": "INT_32"
+			},
+			{
+				"name": "Country",
+				"type": "UTF8"
+			},
+			{
+				"name": "State",
+				"type": "UTF8"
+			},
+			{
+				"name": "City",
+				"type": "UTF8"
+			},
+			{
+				"name": "ZipCode",
+				"type": "UTF8"
+			},
+			{
+				"name": "LatLong",
+				"type": "UTF8"
+			},
+			{
+				"name": "Latitude",
+				"type": "DECIMAL",
+				"precision": 10,
+				"scale": 6
+			},
+			{
+				"name": "Longitude",
+				"type": "DECIMAL",
+				"precision": 10,
+				"scale": 6
+			},
+			{
+				"name": "ChurnValue",
+				"type": "INT_32"
+			},
+			{
+				"name": "ChurnScore",
+				"type": "DECIMAL",
+				"precision": 5,
+				"scale": 2
+			},
+			{
+				"name": "CLTV",
+				"type": "DECIMAL",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "ChurnReason",
+				"type": "UTF8"
+			},
+			{
+				"name": "LoadDate",
+				"type": "INT96"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,17 @@
+{
+	"name": "Schedule T-Mobile Pipelie",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 5,
+				"startTime": "2025-02-16T05:56:00",
+				"timeZone": "Central Standard Time"
+			}
+		}
+	}
+}

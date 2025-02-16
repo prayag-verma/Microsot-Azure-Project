@@ -1,0 +1,9 @@
+{
+	"name": "prayag-verma",
+	"location": "eastus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "1ff8f9fd-1e92-47a2-ab83-594c3e389294",
+		"tenantId": "8d281d1d-9c4d-4bf7-b16e-032d15de9f6c"
+	}
+}
