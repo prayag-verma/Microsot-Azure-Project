@@ -1,4 +1,4 @@
-# 📊 **T-Mobile Churn ETL Pipeline Using Azure Cloud Services**
+# 📊 **Telecom Churn ETL Pipeline Using Azure Cloud Services**
 
 ## 🚀 **Overview**
 This project demonstrates a fully automated ETL pipeline using Azure Data Factory, Databricks, and Azure SQL Database to process and analyze T-Mobile customer churn data. The solution is designed to be scalable, secure, and efficient, leveraging Azure's cloud capabilities.
