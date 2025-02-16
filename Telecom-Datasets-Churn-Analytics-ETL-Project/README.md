@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 # 📊 **T-Mobile Churn ETL Pipeline Using Azure Cloud Services**
 
 ## 🚀 **Overview**
@@ -9,30 +7,18 @@ This project demonstrates a fully automated ETL pipeline using Azure Data Factor
 
 ## 🚀 Getting Started
 
-To get the most out of these exercises:
+To get started, most out of these projects:
 
-1. **Clone the Repository:**
+**Clone the Repository:**
    ```bash
    git clone https://github.com/prayag-verma/MS_Azure/T-Mobile-ETL-Analytics
    cd MS_Azure/T-Mobile-ETL-Analytics
    ```
 
-2. **Set Up the Database:**
-   - Use the `*_build_schema.sql` script in each exercise directory to create the necessary tables and insert data.
-   - Execute the script in your SQL environment:
-     ```sql
-     -- Example for Exercise 01
-     \i SQL_exercise_01/SQL_exercise_01_build_schema.sql
-     ```
-
-3. **Attempt the Questions:**
-   - Open the `*_questions_and_solutions.sql` file.
-   - Try to solve each question on your own before reviewing the provided solutions.
-
 ### 🤝 **Contributors**  
 
 👤 **Prayag Verma**  
-👥 **The University of texas at Dallas**  
+👥 **Data Engineer**  
 
 🔗 **LinkedIn:**  → [linkedin.com/in/prayagv](https://www.linkedin.com/in/prayagv/)  
 🔗 **Portfolio:**  → [profile.aimtocode.com](https://profile.aimtocode.com/)
@@ -296,17 +282,4 @@ Contributions are welcome! If you have additional exercises, improvements, or su
 
 This project is licensed under the MIT License.
 =======
-# Microsot-Azure-Project
-Welcome to my Project Showcase repository! This repository contains **50+ projects** that span across various domains, showcasing my ability to deliver **end-to-end solutions**. The projects range from minor tasks to full-scale applications, covering:
-
-- **End-to-End Data Pipeline Creation**
-- **End-To-End Data Integration**
-- **Data analysis and visualization**
-- **Machine learning models**
-- **Cybersecurity implementations**
-- **Automation scripts**
-  
-Each project includes well-documented code, detailed problem statements, and solutions that you can easily replicate or customize.
-
 Feel free to explore, learn, and contribute!
->>>>>>> 38358df99b2209c0f526f6709b5af55c70bde37e
