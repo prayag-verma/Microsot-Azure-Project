@@ -11,8 +11,8 @@ To get started, most out of these projects:
 
 **Clone the Repository:**
    ```bash
-   git clone https://github.com/prayag-verma/MS_Azure/T-Mobile-ETL-Analytics
-   cd MS_Azure/T-Mobile-ETL-Analytics
+   git clone https://github.com/prayag-verma/Microsot-Azure-Project/tree/main/Telecom-Datasets-Churn-Analytics-ETL-Project
+   cd Microsot-Azure-Project/tree/main/Telecom-Datasets-Churn-Analytics-ETL-Project
    ```
 
 ### 🤝 **Contributors**  
