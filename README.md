@@ -76,8 +76,3 @@ Contributions are welcome! If you have additional exercises, improvements, or su
 This repository is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute the code as per the license terms.
 
 💬 Feel free to raise an issue or contribute via pull requests!  
-
----
-
-### 📜 **License**  
-📄 This project is licensed under the **MIT License**.  
