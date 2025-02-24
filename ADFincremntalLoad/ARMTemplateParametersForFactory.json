@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "ADFincremntalLoad"
+		},
+		"AzureSqlDatabase_ls_password": {
+			"value": ""
+		},
+		"AzureSqlDatabase_ls_properties_typeProperties_server": {
+			"value": "azure-dbserver-test.database.windows.net"
+		},
+		"AzureSqlDatabase_ls_properties_typeProperties_database": {
+			"value": "AzurePractice"
+		},
+		"AzureSqlDatabase_ls_properties_typeProperties_userName": {
+			"value": "sqluser"
+		}
+	}
+}

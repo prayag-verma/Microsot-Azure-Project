@@ -1,0 +1,288 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "ADFincremntalLoad"
+		},
+		"AzureSqlDatabase_ls_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabase_ls'"
+		},
+		"AzureSqlDatabase_ls_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "azure-dbserver-test.database.windows.net"
+		},
+		"AzureSqlDatabase_ls_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "AzurePractice"
+		},
+		"AzureSqlDatabase_ls_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqluser"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Incremental-load-pl')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": " Loading incremental transanctional db into analytical db.",
+				"activities": [
+					{
+						"name": "lookup-order_dim-tbl",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT MAX(order_date) as most_recent_ord_date FROM [dbo].[orders_dim];",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "order_dim_tbl_ds",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "copy-incremental-data",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "lookup-order_dim-tbl",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "SELECT order_id, customer_id, quantity, order_date FROM [dbo].[orders] WHERE order_date > '@{activity('lookup-order_dim-tbl').output.value[0].most_recent_ord_date}'",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "order_tbl_ds",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "order_dim_tbl_ds",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-02-24T07:40:06Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/order_dim_tbl_ds')]",
+				"[concat(variables('factoryId'), '/datasets/order_tbl_ds')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/order_dim_tbl_ds')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase_ls",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "order_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "customer_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "product_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "quantity",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "order_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "orders_dim"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase_ls')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/order_tbl_ds')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Dataset for table 'dbo.order'",
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase_ls",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "order_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "customer_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "product_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "quantity",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "order_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "orders"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase_ls')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase_ls')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Azure SQL Linked service for transactional database !",
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('AzureSqlDatabase_ls_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSqlDatabase_ls_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": true,
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureSqlDatabase_ls_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureSqlDatabase_ls_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TriggerDaily_Incremental-load-Pipeline')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Incremental-load-pl",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2025-02-23T03:00:00",
+						"timeZone": "Central Standard Time"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Incremental-load-pl')]"
+			]
+		}
+	]
+}
