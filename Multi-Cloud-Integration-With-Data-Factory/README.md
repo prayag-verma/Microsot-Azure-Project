@@ -8,8 +8,9 @@ In this project, we integrate data from multiple cloud platforms (AWS and Azure)
 
 ## 🏗️ **Architecture Overview**
 ```plaintext
-AWS S3 (Customers Data)  →  Azure Data Factory  →  Snowflake Warehouse
-Azure Blob Storage (Orders Data) →  Azure Data Factory  →  Snowflake Warehouse
+1. AWS S3 (Customers Data)  →  Azure Data Factory  →  Snowflake Warehouse
+
+2. Azure Blob Storage (Orders Data) →  Azure Data Factory  →  Snowflake Warehouse
 ```
 
 ---
@@ -62,8 +63,23 @@ To follow along, ensure you have:
    ```
 3. **Create Tables:**
    ```sql
-   CREATE TABLE SALES_DB.SALES_SCHEMA.CUSTOMERS (...);
-   CREATE TABLE SALES_DB.SALES_SCHEMA.ORDERS (...);
+   CREATE TABLE SALES_DB.SALES_SCHEMA.CUSTOMERS (
+   CUSTOMER_ID NUMBER(38, 0) NOT NULL PRIMARY KEY,
+    FIRST_NAME VARCHAR(16777216),
+    LAST_NAME VARCHAR(16777216),
+    EMAIL VARCHAR(16777216),
+    PHONE VARCHAR(16777216),
+    ADDRESS VARCHAR(16777216)
+   );
+   
+   CREATE TABLE SALES_DB.SALES_SCHEMA.ORDERS (
+    ORDER_ID NUMBER(38, 0) NOT NULL PRIMARY KEY,
+    CUSTOMER_ID NUMBER(38, 0),
+    ORDER_DATE DATE,
+    TOTAL_AMOUNT FLOAT,
+    ORD_QTY NUMBER(5, 0)
+   );
+   
    ```
 
 ---
