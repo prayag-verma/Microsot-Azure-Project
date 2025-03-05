@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "cross-cloud-integration"
+		},
+		"AmazonS3LinkedService_secretAccessKey": {
+			"value": ""
+		},
+		"AzureBlobLinkedService_connectionString": {
+			"value": ""
+		},
+		"SnowflakeLinkedService_password": {
+			"value": ""
+		},
+		"AmazonS3LinkedService_properties_typeProperties_accessKeyId": {
+			"value": "AKIAQ3EGWS2IBOF4AW3P"
+		},
+		"AzureBlobStorage_SAS_URI_Staging_sasUri": {
+			"value": ""
+		},
+		"Ls_staging_blob_storage_sasUri": {
+			"value": ""
+		},
+		"SnowflakeLinkedService_properties_typeProperties_database": {
+			"value": "SALES_DB"
+		},
+		"SnowflakeLinkedService_properties_typeProperties_role": {
+			"value": "ACCOUNTADMIN"
+		}
+	}
+}

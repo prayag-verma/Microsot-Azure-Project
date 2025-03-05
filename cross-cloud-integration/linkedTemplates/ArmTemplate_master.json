@@ -1,0 +1,98 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "cross-cloud-integration"
+		},
+		"AmazonS3LinkedService_secretAccessKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'secretAccessKey' of 'AmazonS3LinkedService'"
+		},
+		"AzureBlobLinkedService_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobLinkedService'"
+		},
+		"SnowflakeLinkedService_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'SnowflakeLinkedService'"
+		},
+		"AmazonS3LinkedService_properties_typeProperties_accessKeyId": {
+			"type": "string",
+			"defaultValue": "AKIAQ3EGWS2IBOF4AW3P"
+		},
+		"AzureBlobStorage_SAS_URI_Staging_sasUri": {
+			"type": "secureString",
+			"metadata": "Secure string for 'sasUri' of 'AzureBlobStorage_SAS_URI_Staging'"
+		},
+		"Ls_staging_blob_storage_sasUri": {
+			"type": "secureString",
+			"metadata": "Secure string for 'sasUri' of 'Ls_staging_blob_storage'"
+		},
+		"SnowflakeLinkedService_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "SALES_DB"
+		},
+		"SnowflakeLinkedService_properties_typeProperties_role": {
+			"type": "string",
+			"defaultValue": "ACCOUNTADMIN"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "cross-cloud-integration_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AmazonS3LinkedService_secretAccessKey": {
+						"value": "[parameters('AmazonS3LinkedService_secretAccessKey')]"
+					},
+					"AzureBlobLinkedService_connectionString": {
+						"value": "[parameters('AzureBlobLinkedService_connectionString')]"
+					},
+					"SnowflakeLinkedService_password": {
+						"value": "[parameters('SnowflakeLinkedService_password')]"
+					},
+					"AmazonS3LinkedService_properties_typeProperties_accessKeyId": {
+						"value": "[parameters('AmazonS3LinkedService_properties_typeProperties_accessKeyId')]"
+					},
+					"AzureBlobStorage_SAS_URI_Staging_sasUri": {
+						"value": "[parameters('AzureBlobStorage_SAS_URI_Staging_sasUri')]"
+					},
+					"Ls_staging_blob_storage_sasUri": {
+						"value": "[parameters('Ls_staging_blob_storage_sasUri')]"
+					},
+					"SnowflakeLinkedService_properties_typeProperties_database": {
+						"value": "[parameters('SnowflakeLinkedService_properties_typeProperties_database')]"
+					},
+					"SnowflakeLinkedService_properties_typeProperties_role": {
+						"value": "[parameters('SnowflakeLinkedService_properties_typeProperties_role')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
