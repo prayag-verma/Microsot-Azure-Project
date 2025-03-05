@@ -1,0 +1,17 @@
+{
+	"name": "SnowflakeLinkedService",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SnowflakeV2",
+		"typeProperties": {
+			"authenticationType": "Basic",
+			"accountIdentifier": "XCPRQVB-QX21255",
+			"user": "PRAYAG",
+			"database": "SALES_DB",
+			"warehouse": "COMPUTE_WH",
+			"role": "ACCOUNTADMIN",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDM0RDlBRTdDLUM2QUYtNENERS05QTI2LThFREQzQjFBRjYwOV80MDM4ZjMwMi0xZDA5LTRlM2UtODUwYS0zMTIxY2JjY2NkZjIiDQp9"
+		}
+	}
+}

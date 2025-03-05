@@ -1,0 +1,9 @@
+{
+	"name": "t-mobile-adf",
+	"location": "centralus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "d2d0c028-b5dd-4f8a-abf5-ac15d3948144",
+		"tenantId": "84c31ca0-ac3b-4eae-ad11-519d80233e6f"
+	}
+}

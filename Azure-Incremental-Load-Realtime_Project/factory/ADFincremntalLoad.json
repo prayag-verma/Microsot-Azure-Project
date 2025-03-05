@@ -1,0 +1,9 @@
+{
+	"name": "ADFincremntalLoad",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "0942d68d-a154-4ac2-b7ba-8c79af440045",
+		"tenantId": "84c31ca0-ac3b-4eae-ad11-519d80233e6f"
+	}
+}

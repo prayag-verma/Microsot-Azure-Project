@@ -1,0 +1,24 @@
+{
+	"name": "TriggerDaily_Incremental-load-Pipeline",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Incremental-load-pl",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2025-02-23T03:00:00",
+				"timeZone": "Central Standard Time"
+			}
+		}
+	}
+}

@@ -1,0 +1,44 @@
+{
+	"name": "Customers_Snowflake",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SnowflakeLinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeV2Table",
+		"schema": [
+			{
+				"name": "CUSTOMER_ID",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "FIRST_NAME",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "LAST_NAME",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "EMAIL",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "PHONE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ADDRESS",
+				"type": "VARCHAR"
+			}
+		],
+		"typeProperties": {
+			"schema": "SALES_SCHEMA",
+			"table": "CUSTOMERS"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

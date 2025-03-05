@@ -1,0 +1,38 @@
+{
+	"name": "Orders_Snowflake",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SnowflakeLinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeV2Table",
+		"schema": [
+			{
+				"name": "ORDER_ID",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "CUSTOMER_ID",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "ORDER_DATE",
+				"type": "DATE"
+			},
+			{
+				"name": "TOTAL_AMOUNT",
+				"type": "FLOAT"
+			}
+		],
+		"typeProperties": {
+			"schema": "SALES_SCHEMA",
+			"table": "ORDERS"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

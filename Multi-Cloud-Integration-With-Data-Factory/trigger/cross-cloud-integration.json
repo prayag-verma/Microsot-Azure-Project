@@ -1,0 +1,25 @@
+{
+	"name": "cross-cloud-integration",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_multi_cloud_integration",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 15,
+				"startTime": "2025-03-04T23:40:00",
+				"endTime": "2025-03-05T05:38:09",
+				"timeZone": "Central Standard Time"
+			}
+		}
+	}
+}

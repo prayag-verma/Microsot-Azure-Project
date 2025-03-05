@@ -1,0 +1,9 @@
+{
+	"name": "cross-cloud-integration",
+	"location": "centralus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "0025d39e-0e15-457f-837c-09b423032ea3",
+		"tenantId": "84c31ca0-ac3b-4eae-ad11-519d80233e6f"
+	}
+}
